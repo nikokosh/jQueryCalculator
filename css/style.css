@@ -5,8 +5,13 @@
 }
 
 body {
+	display: -webkit-box;
+	display: -ms-flexbox;
 	display: flex;
-	flex-direction: column;
+	-webkit-box-orient: vertical;
+	-webkit-box-direction: normal;
+	    -ms-flex-direction: column;
+	        flex-direction: column;
 	min-height: 100vh;
 	background-color: #f5d376;
 	font-size: 16px;
@@ -23,14 +28,19 @@ header {
 }
 
 .calc-container {
-	flex-grow: 1;
+	-webkit-box-flex: 1;
+	    -ms-flex-positive: 1;
+	        flex-grow: 1;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
 }
 
 .calc {
 	margin: 0 auto;
-	margin-top: 7%;
+	margin-top: 3%;
 	padding: 2rem;
-	width: 20rem;
+	width: 15em;
 	background-color: #335170;
 	border-radius: 10px;
 	text-align: center;
@@ -60,14 +70,23 @@ header {
 }
 
 .calc-btns-container {
+	display: -webkit-box;
+	display: -ms-flexbox;
 	display: flex;
-	justify-content: space-between;
+	-webkit-box-pack: justify;
+	    -ms-flex-pack: justify;
+	        justify-content: space-between;
 
 }
 
 .calc-btn-row {
+	display : -webkit-box;
+	display : -ms-flexbox;
 	display : flex;
-	flex-direction: column;
+	-webkit-box-orient: vertical;
+	-webkit-box-direction: normal;
+	    -ms-flex-direction: column;
+	        flex-direction: column;
 }
 
 .calc-btn {
@@ -91,20 +110,23 @@ header {
 }
 
 .calc-btn:active {
-  transform: translate(0px, 2px);
+  -webkit-transform: translate(0px, 2px);
+          transform: translate(0px, 2px);
   box-shadow: none;
   color: #000;
 }
 
 
 #equal {
-	flex-grow: 1;
+	-webkit-box-flex: 1;
+	    -ms-flex-positive: 1;
+	        flex-grow: 1;
 	line-height: 4;
 }
 
 #clearOne,
 #clearAll {
-	padding: .5em .4em; 
+	padding: .5em .4em;
 	background-color: #f05c2f;
 	box-shadow: inset -1px -3px 10px 1px #cc4411;
 }

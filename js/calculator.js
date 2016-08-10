@@ -104,7 +104,13 @@ $('#clearOne').click(function() {
 	var temporaryStr = $('#screen').text();
 	var stringToInsert = temporaryStr.slice(0, temporaryStr.length-1);
     stringToOperate = stringToInsert;
-	insertToScreen(stringToOperate);
+
+    if(stringToOperate.length > 0) {
+        insertToScreen(stringToOperate);
+    }
+    else {
+        insertToScreen('0');
+    }
 });
 
 /**
