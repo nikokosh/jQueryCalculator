@@ -5,14 +5,13 @@ var acceptedOperators = ['+', '-', '*', '/', '%'];
 var result = 0; // result of math operations
 var equalClicked = false; // to empty stringToOperate when a number is clicked right after equal button
 
-console.log(equalClicked);
+//console.log(equalClicked);
 // NUMBER OR DECIMAL is clicked
 $('.num').click(function() {
 
     if(equalClicked === false) {
         if(stringToOperate.length == acceptedLength) {
-            tmpNum = '';
-            stringToOperate = '';
+            cleanData();
             insertToScreen('0');
         }
         else {
@@ -31,20 +30,16 @@ $('.num').click(function() {
         var firstNum = $(this).text();
         // check if clicked number is a valid digit
         if(isNumeric(parseInt(firstNum))) {
-
             tmpNum = firstNum;
             stringToOperate = firstNum;
             insertToScreen(stringToOperate);
         }
     }
-
 });
-
 
 // OPERATOR is clicked
 $('.operator').click(function() {
 
-    console.log(stringToOperate);
     if(stringToOperate.length < acceptedLength) {
         // check if previous symbol is already an operator and prevent repeating
         if(isNumeric(stringToOperate[stringToOperate.length-1])) {
@@ -72,8 +67,9 @@ $('#equal').click(function(){
     //the most important here is
     //the method eval() that parses a string for me!
     result = eval(stringToOperate);
-
-    if(result.length <= acceptedLength) {
+    resultLength = result.toString().length;
+    console.log('Length: ' + resultLength);
+    if(resultLength <= acceptedLength) {
         insertToScreen(result);
         if(result == 0) {
             stringToOperate = '0';
@@ -84,12 +80,10 @@ $('#equal').click(function(){
         equalClicked = true;
     }
     else {
-        tmpNum = '';
-        stringToOperate = '';
+        cleanData();
         insertToScreen('Err');
     }
 });
-
 
 /*
 AC is clicked
@@ -97,7 +91,7 @@ so we shoul clear the screen and stringToOperate as well
 */
 $('#clearAll').click(function() {
 	result = 0;
-	stringToOperate = '';
+	cleanData();
 	insertToScreen(result);
 });
 
@@ -121,6 +115,13 @@ function isNumeric(num) {
   return !isNaN(parseFloat(num)) && isFinite(num);
 }
 
+/**
+ * Function to reset two variables
+ */
+function cleanData() {
+    stringToOperate = '';
+    tmpNum = '';
+}
 /**
  * Appends a string to a certain div
  * @param {String} data
