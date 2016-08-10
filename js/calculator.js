@@ -66,7 +66,8 @@ $('#decimal').click(function() {
 $('#equal').click(function(){
     //the most important here is
     //the method eval() that parses a string for me!
-    result = eval(stringToOperate);
+    // Math.round to prevent a very long result
+    result = Math.round(eval(stringToOperate) * 100) / 100;
     resultLength = result.toString().length;
     console.log('Length: ' + resultLength);
     if(resultLength <= acceptedLength) {
