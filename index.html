@@ -2,59 +2,67 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<title>Calculator</title>
-
+		<title>jQuery Calculator</title>
 		<link rel="stylesheet" href="css/style.css">
-		<link href='https://fonts.googleapis.com/css?family=Nova+Mono|Space+Mono:400,700|Audiowide' rel='stylesheet' type='text/css'>
-		
+		<link href="https://fonts.googleapis.com/css?family=Audiowide|Pacifico" rel="stylesheet">
+
 	</head>
 
 	<body>
 
-	<div class="calc">
+		<header>
+			FreeCodeCamp advanced frontend project
+		</header>
 
-		<div class="calc-screen">
-			<span id="screen">0</span>
+
+		<div class="calc-container">
+
+			<div class="calc">
+
+				<div id="screen">0</div>
+
+				<div class="calc-sign">Nastia's calculator</div>
+
+				<div class="calc-btns-container">
+					<div class="calc-btn-row">
+						<button role="button" id="clearAll" class="calc-btn">AC</button>
+						<button role="button" class="num calc-btn">7</button>
+						<button role="button" class="num calc-btn">4</button>
+						<button role="button" class="num calc-btn">1</button>
+						<button role="button" class="num calc-btn">0</button>
+					</div>
+
+					<div class="calc-btn-row">
+						<button role="button" id="clearOne" class="calc-btn">CE</button>
+						<button role="button" class="num calc-btn">8</button>
+						<button role="button" class="num calc-btn">5</button>
+						<button role="button" class="num calc-btn">2</button>
+						<button role="button" id="decimal" class="calc-btn">.</button>
+					</div>
+
+					<div class="calc-btn-row">
+						<button role="button" class="operator calc-btn">%</button>
+						<button role="button" class="num calc-btn">9</button>
+						<button role="button" class="num calc-btn">6</button>
+						<button role="button" class="num calc-btn">3</button>
+						<button role="button" class="operator calc-btn">+</button>
+					</div>
+
+					<div class="calc-btn-row">
+						<button role="button" class="operator calc-btn">/</button>
+						<button role="button" class="operator calc-btn">*</button>
+						<button role="button" class="operator calc-btn">-</button>
+						<button role="button" id="equal" class="calc-btn">=</button>
+					</div>
+				</div>
+			</div>
 		</div>
 
-		<div class="calc-buttons">
-			<div class="btn-row">
-				<span id="clearAll">AC</span>
-				<span class="num">7</span>
-				<span class="num">4</span>
-				<span class="num">1</span>
-				<span class="num">0</span>
-			</div>
-
-			<div class="btn-row">
-				<span id="clearOne">CE</span>
-				<span class="num">8</span>
-				<span class="num">5</span>
-				<span class="num">2</span>
-				<span id="decimal" class="num">.</span>
-			</div>
-
-			<div class="btn-row">
-				<span class="operator">%</span>
-				<span class="num">9</span>
-				<span class="num">6</span>
-				<span class="num">3</span>
-				<span class="operator">+</span>
-			</div>
-
-			<div class="btn-row">
-				<span class="operator">/</span>
-				<span class="operator">*</span>
-				<span class="operator">-</span>
-				<span id="equal">=</span>
-			</div>
-		</div>
-
-
-	</div>
+		<footer>
+			Designed and coded by <a href="https://fr.linkedin.com/in/anastasia-oudin-7781b78a" role="link">Anastasia Oudin</a>
+		</footer>
 
 		<script src="js/jquery2.2.3.js"></script>
-		<!-- <script src="js/calculator.js"></script> -->
-		<script src="js/calcWithParse.js"></script>
+		<script src="js/calculator.js"></script>
 	</body>
 </html>

@@ -1,60 +1,117 @@
-body {
+* {
 	margin: 0;
 	padding: 0;
-	font-size: 16px;
-	background-color: #DADFE1;
+	box-sizing: border-box;
 }
 
+body {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+	background-color: #f5d376;
+	font-size: 16px;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+header {
+	padding: 1em;
+	text-align: center;
+	background-color: #fff;
+	font-family: 'Pacifico';
+	font-size: 1.8em;
+	box-shadow: 2px 0px 6px 2px #888;
+}
+
+.calc-container {
+	flex-grow: 1;
+}
 
 .calc {
-	-webkit-transform: translateY(50%);
-	        transform: translateY(50%);
 	margin: 0 auto;
+	margin-top: 7%;
 	padding: 2rem;
 	width: 20rem;
-	background-color: #3A539B;
+	background-color: #335170;
 	border-radius: 10px;
 	text-align: center;
 	font-family: 'Audiowide';
-	/*background-color: rgb(236, 240, 241);*/
+	font-size: 1.4em;
+	box-shadow: 3px 5px 4px 2px #333,
+				inset -5px -6px 26px 0px rgba(71,71,71,1);
 }
 
-span {
-	display: inline-block;
-	margin: 5px;
-	padding: 10px 15px;
-	min-width: 2rem;
-	background-color: azure;
-	border-radius: 10px;
-}
-
-.calc-screen {
-	margin: 1rem auto;
-	width: 19rem;
-	height: 3rem;
-	background-color: #fff;
+.calc-sign {
+	margin: .7em 0;
+	color: #fdfdfd;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: .6em;
+	font-weight: bold;
+	text-transform: uppercase;
 }
 
 #screen {
-	/*padding: 20px;*/
-	width: 17rem;
-	border-radius: 4px;
-	background-color: transparent;
-	line-height: 14px;
+	margin: .5em auto;
+	padding: .4em;
+	width: 100%;
+	border-radius: .4em;
+	background-color: #fff;
+	font-size: 1.1em;
 	text-align: right;
 }
 
-.calc-buttons {
+.calc-btns-container {
 	display: flex;
 	justify-content: space-between;
+
 }
 
-.btn-row {
+.calc-btn-row {
 	display : flex;
 	flex-direction: column;
 }
 
+.calc-btn {
+	margin: .2em 0;
+	padding: .5em .6em;
+	min-width: 2.6em;
+	display: inline-block;
+	background-color: #F2F1EF;
+	font-family: 'Audiowide';
+	font-size: 1em;
+	border-radius: .4em;
+	border-top: none;
+	border-left: none;
+	border-bottom: 4px solid #333;
+	border-right: 2px solid #333;
+
+	box-shadow: inset -1px -3px 10px 1px #ccc;
+	cursor: pointer;
+	outline: none;
+}
+
+.calc-btn:active {
+  transform: translate(0px, 2px);
+  box-shadow: none;
+  color: #000;
+}
+
+
 #equal {
 	flex-grow: 1;
 	line-height: 4;
+}
+
+#clearOne,
+#clearAll {
+	background-color: #f05c2f;
+	box-shadow: inset -1px -3px 10px 1px #cc4411;
+}
+
+footer {
+	padding: 2em;
+	text-align: center;
+}
+
+footer a {
+	color: #cc4411;
 }
