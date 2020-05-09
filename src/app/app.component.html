@@ -2,10 +2,10 @@
 
   <div class="calc">
 
-    <div id="screen">0</div>
+    <app-display [value]="currentDigit"></app-display>
 
     <div class="calc-sign">Nastia's calculator</div>
 
-    <app-buttons></app-buttons>
+    <app-buttons (digitPressed)="pressDigit($event)"></app-buttons>
   </div>
 </div>

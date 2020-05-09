@@ -6,7 +6,18 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'fcc-calculator';
+
+  currentDigit: string = '0'
+  expression: string = ''
+
+  pressDigit(digit: number) {
+
+  }
+
+  clear() {
+    this.currentDigit = '0'
+    this.expression = ''
+  }
 }
 
 // var acceptedLength = 12; // max length that can be displayed on the calculator screen
