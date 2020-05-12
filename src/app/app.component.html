@@ -2,10 +2,16 @@
 
   <div class="calc">
 
-    <app-display [value]="currentDigit"></app-display>
+    <app-display 
+      [value]="currentValue" 
+      [expression]="expression"></app-display>
 
     <div class="calc-sign">Nastia's calculator</div>
 
-    <app-buttons (digitPressed)="pressDigit($event)"></app-buttons>
+    <app-buttons 
+      (digitPressed)="pressDigit($event)"
+      (decimalPressed)="pressDecimal()"
+      (operatorPressed)="pressOperator($event)"
+      (clearPressed)="clear()"></app-buttons>
   </div>
 </div>

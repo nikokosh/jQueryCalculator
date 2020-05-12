@@ -31,11 +31,19 @@ describe('DisplayComponent', () => {
     expect(fixture.nativeElement.querySelector('#display')).toBeTruthy();
   });
   
-  it('should change display value', () => {
+  it('should update display value', () => {
     expect(fixture.nativeElement.querySelector('#display').textContent).toBe('0');
     
-    comp.value = 5;
+    comp.value = '5';
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('#display').textContent).toBe('5');
+  });
+  
+  it('should update expression value', () => {
+    expect(fixture.nativeElement.querySelector('#expression').textContent).toBe('');
+    
+    comp.expression = '2+2';
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('#expression').textContent).toBe('2+2');
   });
 });

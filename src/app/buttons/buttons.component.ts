@@ -1,4 +1,5 @@
 import { Component, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { OPERATORS } from '../constants';
 
 @Component({
   selector: 'app-buttons',
@@ -13,6 +14,7 @@ export class ButtonsComponent {
   @Output() clearPressed = new EventEmitter<void>()
   @Output() equalsPressed = new EventEmitter<void>()
   @Output() decimalPressed = new EventEmitter<void>()
+  readonly operators = OPERATORS
 
   pressDigit(digit: number) {
     this.digitPressed.emit(digit)

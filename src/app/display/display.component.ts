@@ -8,6 +8,7 @@ import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 })
 export class DisplayComponent {
 
-  @Input() value: number = 0
+  @Input() value: string = '0'
+  @Input() expression: string = ''
 
 }

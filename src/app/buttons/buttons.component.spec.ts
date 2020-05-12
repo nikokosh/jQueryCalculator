@@ -1,7 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { ChangeDetectionStrategy } from '@angular/core';
 
 import { ButtonsComponent } from './buttons.component';
+import { OPERATORS } from '../constants';
 
 describe('ButtonsComponent', () => {
   let comp: ButtonsComponent;
@@ -18,13 +20,12 @@ describe('ButtonsComponent', () => {
     { str: 'eight', num: 8}, 
     { str: 'nine', num: 9}];
 
-  const operators = [
-    { name: 'add', value: '+'},
-    { name: 'subtract', value: '-'},
-    { name: 'multiply', value: '*'},
-    { name: 'divide', value: '/'}];
+  const operators = Object.values(OPERATORS) 
 
   beforeEach(async(() => {
+    TestBed.overrideComponent(ButtonsComponent, { add: {
+      changeDetection: ChangeDetectionStrategy.Default
+    }})
     TestBed.configureTestingModule({
       declarations: [ ButtonsComponent ]
     })
@@ -102,7 +103,7 @@ describe('ButtonsComponent', () => {
 
   it('should raise an event when decimal button is pressed', () => {
     let pressed = false;
-    comp.equalsPressed.subscribe(() => pressed = true);
+    comp.decimalPressed.subscribe(() => pressed = true);
 
     fixture.debugElement.query(By.css(`#decimal`)).triggerEventHandler('click', null);
     expect(pressed).toBeTrue();

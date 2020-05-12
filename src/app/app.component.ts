@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { DIGIT_LIMIT, OPERATORS } from './constants';
 
 @Component({
   selector: 'app-root',
@@ -7,16 +8,66 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
 
-  currentDigit: string = '0'
+  currentValue: string = '0'
   expression: string = ''
 
   pressDigit(digit: number) {
+    if (this.isLessThanLimit()) {
+      if (this.isLastSymbolAnOperator()) {
+        this.currentValue = ''
+      }
+      let tempValue: string = this.currentValue + digit
+      if (this.isFloat(tempValue)) {
+        this.currentValue += digit
+        this.expression += digit
+      } else {
+        this.currentValue = `${parseInt(tempValue)}`
+        if (this.isLastSymbolAnOperator()) {
+          this.expression += parseInt(tempValue)
+        } else {
+          // this regex matches an empty string or a number (float or integer) preceeded by a math operator at the end of a string 
+          const lastDigitInExpression = /^$|(?=\*|\+|\/|\-|)(\d+(\.\d+)?)(?!\S)/
+          this.expression = this.expression.replace(lastDigitInExpression, `${parseInt(tempValue)}`) 
+        }
+      }
+    }
+  }
 
+  pressDecimal() {
+    if (this.isLessThanLimit()) {
+      this.expression += !this.isFloat(this.currentValue) ? '.' : ''
+      this.currentValue += !this.isFloat(this.currentValue) ? '.' : ''
+    }
+  }
+
+  pressOperator(operator: string) {
+    if (this.isLastSymbolAnOperator()) {
+      if (operator === OPERATORS.subtract.value && 
+        this.expression[this.expression.length-1] !== OPERATORS.subtract.value) {
+        this.expression += operator
+      } else {
+        this.expression = this.expression.substring(0, this.expression.length-1) + operator
+      }
+    } else {
+      this.expression += operator
+    }
   }
 
   clear() {
-    this.currentDigit = '0'
+    this.currentValue = '0'
     this.expression = ''
+  }
+
+  private isLastSymbolAnOperator(): boolean {
+    return Object.values(OPERATORS).some(o => o.value === this.expression[this.expression.length-1])
+  }
+
+  private isFloat(str: string): boolean {
+    return str.includes('.') ? true : false
+  }
+
+  private isLessThanLimit(value: string = this.currentValue, limit: number = DIGIT_LIMIT): boolean {
+    return value.length < limit ? true : false
   }
 }
 

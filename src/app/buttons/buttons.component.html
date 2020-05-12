@@ -12,7 +12,7 @@
     <button id="eight" class="calc-btn" (click)="pressDigit(8)">8</button>
     <button id="five" class="calc-btn" (click)="pressDigit(5)">5</button>
     <button id="two" class="calc-btn" (click)="pressDigit(2)">2</button>
-    <button id="decimal" class="calc-btn">.</button>
+    <button id="decimal" class="calc-btn" (click)="pressDecimal()">.</button>
   </div>
 
   <div class="calc-btn-row">
@@ -20,13 +20,13 @@
     <button id="nine" class="calc-btn" (click)="pressDigit(9)">9</button>
     <button id="six" class="calc-btn" (click)="pressDigit(6)">6</button>
     <button id="three" class="calc-btn" (click)="pressDigit(3)">3</button>
-    <button id="add" class="calc-btn" (click)="pressOperator('+')">+</button>
+    <button id="add" class="calc-btn" (click)="pressOperator(operators.add.value)">{{ operators.add.value }}</button>
   </div>
 
   <div class="calc-btn-row">
-    <button id="divide" class="calc-btn" (click)="pressOperator('/')">/</button>
-    <button id="multiply" class="calc-btn" (click)="pressOperator('*')">*</button>
-    <button id="subtract" class="calc-btn" (click)="pressOperator('-')">-</button>
+    <button id="divide" class="calc-btn" (click)="pressOperator(operators.divide.value)">{{ operators.divide.value }}</button>
+    <button id="multiply" class="calc-btn" (click)="pressOperator(operators.multiply.value)">{{ operators.multiply.value }}</button>
+    <button id="subtract" class="calc-btn" (click)="pressOperator(operators.subtract.value)">{{ operators.subtract.value }}</button>
     <button id="equals" class="calc-btn" (click)="pressEquals()">=</button>
   </div>
 </div>
