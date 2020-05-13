@@ -53,6 +53,12 @@ export class AppComponent {
     }
   }
 
+  pressEquals() {
+    const result = this.calcResult(this.expression)
+    this.currentValue = result
+    this.expression = this.expression + '=' + result
+  }
+
   clear() {
     this.currentValue = '0'
     this.expression = ''
@@ -68,6 +74,45 @@ export class AppComponent {
 
   private isLessThanLimit(value: string = this.currentValue, limit: number = DIGIT_LIMIT): boolean {
     return value.length < limit ? true : false
+  }
+
+  private calcResult(expression: string): string {
+    const mathItUp = {
+      [OPERATORS.add.value]: (x, y) => x + y,
+      [OPERATORS.subtract.value]: (x, y) => x - y,
+      [OPERATORS.multiply.value]: (x, y) => x * y,
+      [OPERATORS.divide.value]: (x, y) => {
+        let result = x / y
+        return Number.isInteger(result) ?
+          result :
+          result.toFixed(4)
+      },
+    }
+    /* 
+     1. find all the occurencies of *, /, *- and /- and digits around them 
+     2. perform multiply and divide operations in their order from the beginning to the end of the expression
+     3. replace multiply and divide operations with the result of these operations
+     4. find the first occurency of +, -, +- and digits around them
+     5. replace this occurency with the result of the operation
+     6. repeat searching from the start till only one number is left
+     */
+    const multiplyAndDivideRe = /(((?<=\+|\*|\/|\n|^)-)?\d+(\.\d+)?)(\/|\*)(-?\d+(\.\d+)?)/
+    const addAndSubtractRe = /(((?<=\+|\*|\/|^|\n)-)?\d+(\.\d+)?)(\+|\-)(-?\d+(\.\d+)?)/
+    let result = expression
+
+    while(multiplyAndDivideRe.test(result)) {
+      result = result.replace(multiplyAndDivideRe, (match, firstOperand, p2, p3, operator, secondOperand) => {
+        // Number() handles positive/negative integers and float numbers
+        return mathItUp[operator](Number(firstOperand), Number(secondOperand))
+      })
+    }
+
+    while(addAndSubtractRe.test(result)) {
+      result = result.replace(addAndSubtractRe, (match, firstOperand, p2, p3, operator, secondOperand) => {
+        return mathItUp[operator](Number(firstOperand), Number(secondOperand))
+      })
+    }
+    return result
   }
 }
 

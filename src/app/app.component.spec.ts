@@ -124,6 +124,45 @@ describe('AppComponent', () => {
     comp.pressDigit(2);
     expect(comp.expression).toBe('2-2');
   });
+  
+  it('should show answer when equals is pressed', () => {
+    comp.pressDigit(4);
+    comp.pressOperator(OPERATORS.divide.value);
+    comp.pressOperator(OPERATORS.subtract.value);
+    comp.pressDigit(2); // -2
+    comp.pressOperator(OPERATORS.add.value);
+    comp.pressDigit(6); 
+    comp.pressOperator(OPERATORS.multiply.value);
+    comp.pressDigit(0);
+    comp.pressDecimal();
+    comp.pressDigit(5);
+    
+    comp.pressEquals();
+    expect(comp.expression).toBe('4/-2+6*0.5=1');
+    expect(comp.currentValue).toBe('1');
+
+    comp.expression = '-10.4*-2+-70/-35-42*0.5*2*4';
+    comp.currentValue = '4';
+    comp.pressEquals();
+    expect(comp.expression).toBe('-10.4*-2+-70/-35-42*0.5*2*4=-145.2');
+    expect(comp.currentValue).toBe('-145.2');
+
+    comp.expression = '10.4*-2+70/35-42*0.5*2*4';
+    comp.currentValue = '4';
+    comp.pressEquals();
+    expect(comp.expression).toBe('10.4*-2+70/35-42*0.5*2*4=-186.8');
+    expect(comp.currentValue).toBe('-186.8');
+  });
+
+  it('should round up float numbers to 4 decimal places of precision', () => {
+    comp.pressDigit(2);
+    comp.pressOperator(OPERATORS.divide.value);
+    comp.pressDigit(7);
+    
+    comp.pressEquals();
+    expect(comp.expression).toBe('2/7=0.2857');
+    expect(comp.currentValue).toBe('0.2857');
+  });
 
   it('should restore default values when clear button is pressed', () => {
     comp.currentValue = '957';
