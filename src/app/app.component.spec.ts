@@ -80,6 +80,16 @@ describe('AppComponent', () => {
     comp.pressDigit(1);
     expect(comp.currentValue).toBe('1'); 
   });
+
+  it('should reset expression and current value if a digit follows immediately =', () => {
+    comp.expression = '2+2=4';
+    comp.currentValue = '2';
+    comp.pressDigit(6);
+    expect(comp.currentValue).toBe('6');
+    comp.pressOperator(OPERATORS.multiply.value);
+    comp.pressDigit(3);
+    expect(comp.expression).toBe('6*3');
+  });
   
   it('should compose expression string appropriately', () => {
     comp.pressDigit(0);
@@ -101,7 +111,7 @@ describe('AppComponent', () => {
     expect(comp.expression).toBe('2+2.5');
   });
 
-  it('should replace an operator if another operator was chosen', () => {
+  it('should handle multiple operators serie: replace preceding operator (/*, +*, -*, ** ==> *)', () => {
     comp.pressDigit(2);
     comp.pressOperator(OPERATORS.add.value);
     comp.pressOperator(OPERATORS.multiply.value);
@@ -109,15 +119,26 @@ describe('AppComponent', () => {
     expect(comp.expression).toBe('2*2');
   });
 
-  it('should add a subtract operator after another operator', () => {
+  it('should handle multiple operators serie: let subtract operator follow another operator (*- ==> *-)', () => {
     comp.pressDigit(2);
     comp.pressOperator(OPERATORS.multiply.value);
+    comp.pressOperator(OPERATORS.subtract.value);
     comp.pressOperator(OPERATORS.subtract.value);
     comp.pressDigit(2);
     expect(comp.expression).toBe('2*-2');
   });
-  
-  it('should not have double subtract operator', () => {
+
+  it('should handle multiple operators serie: replace triple operator by the last operator (/-+ ==> +)', () => {
+    comp.pressDigit(2);
+    comp.pressOperator(OPERATORS.multiply.value);
+    comp.pressOperator(OPERATORS.divide.value);
+    comp.pressOperator(OPERATORS.subtract.value);
+    comp.pressOperator(OPERATORS.add.value);
+    comp.pressDigit(2);
+    expect(comp.expression).toBe('2+2');
+  });
+
+  it('should handle multiple operators serie: replace subtract operator followed by another subtract operator (-- ==> -) ', () => {
     comp.pressDigit(2);
     comp.pressOperator(OPERATORS.subtract.value);
     comp.pressOperator(OPERATORS.subtract.value);
@@ -152,6 +173,20 @@ describe('AppComponent', () => {
     comp.pressEquals();
     expect(comp.expression).toBe('10.4*-2+70/35-42*0.5*2*4=-186.8');
     expect(comp.currentValue).toBe('-186.8');
+  });
+
+  it('should start a new calculation that operates on the result of the previous evaluation if an operator was pressed immediately after =', () => {
+    comp.expression = '2+2';
+    comp.currentValue = '2';
+    comp.pressEquals();
+    comp.pressOperator(OPERATORS.multiply.value);
+    comp.pressDigit(3);
+    expect(comp.expression).toBe('4*3');
+    expect(comp.currentValue).toBe('3');
+
+    comp.pressEquals();
+    expect(comp.expression).toBe('4*3=12');
+    expect(comp.currentValue).toBe('12');
   });
 
   it('should round up float numbers to 4 decimal places of precision', () => {

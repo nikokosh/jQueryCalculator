@@ -16,40 +16,67 @@ export class AppComponent {
       if (this.isLastSymbolAnOperator()) {
         this.currentValue = ''
       }
-      let tempValue: string = this.currentValue + digit
-      if (this.isFloat(tempValue)) {
-        this.currentValue += digit
-        this.expression += digit
+
+      if (this.isEqualsPressed()) {
+        this.currentValue = `${digit}`
+        this.expression = this.currentValue
       } else {
-        this.currentValue = `${parseInt(tempValue)}`
-        if (this.isLastSymbolAnOperator()) {
-          this.expression += parseInt(tempValue)
+
+        let tempValue: string = this.currentValue + digit
+        if (this.isFloat(tempValue)) {
+          this.currentValue += digit
+          this.expression += digit
         } else {
-          // this regex matches an empty string or a number (float or integer) preceeded by a math operator at the end of a string 
-          const lastDigitInExpression = /^$|(?=\*|\+|\/|\-|)(\d+(\.\d+)?)(?!\S)/
-          this.expression = this.expression.replace(lastDigitInExpression, `${parseInt(tempValue)}`) 
+          this.currentValue = `${parseInt(tempValue)}`
+          if (this.isLastSymbolAnOperator()) {
+            this.expression += parseInt(tempValue)
+          } else {
+            // this regex matches an empty string or a number (float or integer) preceeded by a math operator at the end of a string 
+            const lastDigitInExpression = /^$|(?=\*|\+|\/|\-|)(\d+(\.\d+)?)(?!\S)/
+            this.expression = this.expression.replace(lastDigitInExpression, `${parseInt(tempValue)}`) 
+          }
         }
       }
+
     }
   }
 
   pressDecimal() {
     if (this.isLessThanLimit()) {
-      this.expression += !this.isFloat(this.currentValue) ? '.' : ''
-      this.currentValue += !this.isFloat(this.currentValue) ? '.' : ''
+      const appendDecimal = () => !this.isFloat(this.currentValue) ? '.' : '' 
+      this.expression += appendDecimal()
+      this.currentValue += appendDecimal()
     }
   }
 
   pressOperator(operator: string) {
-    if (this.isLastSymbolAnOperator()) {
-      if (operator === OPERATORS.subtract.value && 
-        this.expression[this.expression.length-1] !== OPERATORS.subtract.value) {
-        this.expression += operator
-      } else {
-        this.expression = this.expression.substring(0, this.expression.length-1) + operator
+
+    this.expression = this.isEqualsPressed() ?
+      this.currentValue + operator : // Pressing an operator immediately following = should start a new calculation that operates on the result of the previous evaluation.
+      this.isLastSymbolAnOperator() ?
+        handleOperatorsSerie(this.expression, operator) :
+        this.expression + operator
+
+    /* Four possible ways to handle an operator following immediately another operator */
+    function handleOperatorsSerie(expression: string, operator: string): string {
+     
+      // WARNING: this if should come before triple operator handling in order to handle properly double subtract operator
+      if (operator === OPERATORS.subtract.value) {
+        return (expression[expression.length-1] === OPERATORS.subtract.value) ?
+          expression : // 1. replace subtract operator followed by another subtract operator (-- ==> -) 
+          expression += operator // 2. let subtract operator follow another operator (*- ==> *-)
       }
-    } else {
-      this.expression += operator
+
+      // 3. replace triple operator by the last operator (/-+ ==> +)
+      const operatorsSerie = /(\+|-|\*|\/){2,}$/ // match two or more operators at the end of the string
+      if (operatorsSerie.test(expression)) {
+        return expression.replace(operatorsSerie, operator)
+      }
+       
+      // 4. replace preceding operator (/*, +*, -*, ** ==> *)
+      if (operator !== OPERATORS.subtract.value) {
+        return expression.substring(0, expression.length-1) + operator
+      }
     }
   }
 
@@ -62,6 +89,10 @@ export class AppComponent {
   clear() {
     this.currentValue = '0'
     this.expression = ''
+  }
+
+  private isEqualsPressed(expression: string = this.expression): boolean {
+    return /=/.test(expression)
   }
 
   private isLastSymbolAnOperator(): boolean {
