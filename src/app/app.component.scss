@@ -1,0 +1,31 @@
+.calc-container {
+	-webkit-box-flex: 1;
+	    -ms-flex-positive: 1;
+	        flex-grow: 1;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+
+.calc {
+	margin: 0 auto;
+	margin-top: 3%;
+	padding: 2rem;
+	width: 15em;
+	background-color: #335170;
+	border-radius: 10px;
+	text-align: center;
+	font-family: 'Audiowide';
+	font-size: 1.4em;
+	box-shadow: 3px 5px 4px 2px #333,
+				inset -5px -6px 26px 0px rgba(71,71,71,1);
+}
+
+.calc-sign {
+	margin: .7em 0;
+	color: #fdfdfd;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: .6em;
+	font-weight: bold;
+	text-transform: uppercase;
+}

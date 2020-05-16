@@ -7,13 +7,8 @@
 }
 
 body {
-	display: -webkit-box;
-	display: -ms-flexbox;
 	display: flex;
-	-webkit-box-orient: vertical;
-	-webkit-box-direction: normal;
-	    -ms-flex-direction: column;
-	        flex-direction: column;
+	flex-direction: column;
 	min-height: 100vh;
 	background-color: #f5d376;
 	font-size: 16px;
@@ -27,117 +22,4 @@ header {
 	font-family: 'Pacifico';
 	font-size: 1.8em;
 	box-shadow: 2px 0px 6px 2px #888;
-}
-
-.calc-container {
-	-webkit-box-flex: 1;
-	    -ms-flex-positive: 1;
-	        flex-grow: 1;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-}
-
-.calc {
-	margin: 0 auto;
-	margin-top: 3%;
-	padding: 2rem;
-	width: 15em;
-	background-color: #335170;
-	border-radius: 10px;
-	text-align: center;
-	font-family: 'Audiowide';
-	font-size: 1.4em;
-	box-shadow: 3px 5px 4px 2px #333,
-				inset -5px -6px 26px 0px rgba(71,71,71,1);
-}
-
-.calc-sign {
-	margin: .7em 0;
-	color: #fdfdfd;
-	font-family: Arial, Helvetica, sans-serif;
-	font-size: .6em;
-	font-weight: bold;
-	text-transform: uppercase;
-}
-
-#screen {
-	margin: .5em auto;
-	padding: .4em;
-	width: 100%;
-	border-radius: .4em;
-	background-color: #fff;
-	font-size: 1.1em;
-	text-align: right;
-}
-
-.calc-btns-container {
-	display: -webkit-box;
-	display: -ms-flexbox;
-	display: flex;
-	-webkit-box-pack: justify;
-	    -ms-flex-pack: justify;
-	        justify-content: space-between;
-
-}
-
-.calc-btn-row {
-	display : -webkit-box;
-	display : -ms-flexbox;
-	display : flex;
-	-webkit-box-orient: vertical;
-	-webkit-box-direction: normal;
-	    -ms-flex-direction: column;
-	        flex-direction: column;
-}
-
-.calc-btn {
-	margin: .2em 0;
-	margin-right: .2em;
-	padding: .5em .6em;
-	min-width: 2.6em;
-	display: inline-block;
-	background-color: #F2F1EF;
-	font-family: 'Audiowide';
-	font-size: 1em;
-	border-radius: .4em;
-	border-top: none;
-	border-left: none;
-	border-bottom: 4px solid #333;
-	border-right: 2px solid #333;
-
-	box-shadow: inset -1px -3px 10px 1px #ccc;
-	cursor: pointer;
-	outline: none;
-}
-
-.calc-btn:active {
-  -webkit-transform: translate(0px, 2px);
-          transform: translate(0px, 2px);
-  box-shadow: none;
-  color: #000;
-}
-
-
-#equal {
-	-webkit-box-flex: 1;
-	    -ms-flex-positive: 1;
-	        flex-grow: 1;
-	line-height: 4;
-}
-
-#clearOne,
-#clearAll {
-	padding: .5em .4em;
-	background-color: #f05c2f;
-	box-shadow: inset -1px -3px 10px 1px #cc4411;
-}
-
-footer {
-	padding: 2em;
-	text-align: center;
-}
-
-footer a {
-	color: #cc4411;
 }
