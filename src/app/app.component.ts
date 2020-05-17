@@ -76,9 +76,11 @@ export class AppComponent {
   }
 
   pressEquals() {
-    const result = this.calcResult(this.expression)
-    this.currentValue = result
-    this.expression = this.expression + '=' + result
+    if (!this.isEqualsPressed()) {
+      const result = this.calcResult(this.expression)
+      this.currentValue = result
+      this.expression = this.expression + '=' + result
+    }
   }
   
   clear() {

@@ -198,6 +198,15 @@ describe('AppComponent', () => {
     expect(comp.expression).toBe('2/7=0.2857');
     expect(comp.currentValue).toBe('0.2857');
   });
+  
+  it('should do nothing if calculation was already made but equals is pressed again', () => {
+    comp.expression = '2+2';
+    comp.currentValue = '2';
+    comp.pressEquals();
+    comp.pressEquals();
+    expect(comp.expression).toBe('2+2=4');
+    expect(comp.currentValue).toBe('4');
+  });
 
   it('should restore default values when clear button is pressed', () => {
     comp.currentValue = '957';
