@@ -23,7 +23,7 @@ export class AppComponent {
   }
 
   pressDigit(digit: number) {
-    if (this.isLessThanLimit()) {
+    if (this.isLastSymbolAnOperator() || this.isLessThanLimit()) {
 
       if (this.isLastSymbolAnOperator()) this.currentValue = ''
 

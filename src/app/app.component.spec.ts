@@ -74,6 +74,27 @@ describe('AppComponent', () => {
     expect(comp.currentValue).toBe(currValue);
   });
 
+  it('should handle an expression with a current value of maximum length', () => {
+    const createMaxLengthValue = (value: number) => {
+      let res = '';
+      for(let i = 0; i < DIGIT_LIMIT; i++) {
+        res += value;
+      }
+      return res;
+    }
+
+    let currValue = createMaxLengthValue(1)
+    comp.currentValue = currValue;
+    comp.expression = currValue;
+    comp.pressOperator(OPERATORS.multiply.value);
+    comp.pressDigit(2);
+    comp.pressEquals();
+
+    let expectedResult = createMaxLengthValue(2);
+    expect(comp.currentValue).toBe(expectedResult);
+    expect(comp.expression).toBe(`${currValue}*2=${expectedResult}`);
+  });
+
   it('should reset currentValue when a digit follows an operator', () => {
     comp.currentValue ='12.3';
     comp.pressOperator(OPERATORS.add.value);
