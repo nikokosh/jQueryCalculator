@@ -1,9 +1,15 @@
 .display {
-	margin: .5em auto;
-	padding: .4em;
-	width: 100%;
-	background-color: #fff;
-	border-radius: .4em;
-	font-size: 1.1em;
+	margin: .5rem 0;
 	text-align: right;
+}
+
+.expression {
+	min-height: .75rem; // so empty expression is not collapsed
+	font-size: 1.15rem;
+	line-height: .75rem; // so empty expression is not collapsed 
+}
+
+.output {
+	margin-top: .1rem;
+	font-size: 2.75rem;
 }

@@ -1,4 +1,4 @@
-export const DIGIT_LIMIT = 12
+export const DIGIT_LIMIT = 9
 
 export const OPERATORS = {
   add: { name: 'add', value: '+'},

@@ -6,20 +6,18 @@
 	box-sizing: border-box;
 }
 
-body {
-	display: flex;
-	flex-direction: column;
-	min-height: 100vh;
-	background-color: #f5d376;
-	font-size: 16px;
-	font-family: Arial, Helvetica, sans-serif;
+:root {
+	--font-primary: 'Open Sans', sans-serif;
+	--white: #fff;
 }
 
-header {
-	padding: 1em;
-	text-align: center;
-	background-color: #fff;
-	font-family: 'Pacifico';
-	font-size: 1.8em;
-	box-shadow: 2px 0px 6px 2px #888;
+html {
+	font-size: 16px;
+}
+
+body {
+	min-height: 100vh;
+	background-color: #ededed;
+	font-family: var(--font-primary);
+	font-weight: 300;
 }
