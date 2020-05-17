@@ -110,10 +110,13 @@ export class AppComponent {
       [OPERATORS.subtract.value]: (x, y) => x - y,
       [OPERATORS.multiply.value]: (x, y) => x * y,
       [OPERATORS.divide.value]: (x, y) => {
-        let result = x / y
+        const countDecimalPlaces = (floatNum: number) => `${floatNum}`.split('.')[1].length
+        const result = x / y
         return Number.isInteger(result) ?
           result :
-          result.toFixed(4)
+          countDecimalPlaces(result) > 4 ?
+            result.toFixed(4) :
+            result
       },
     }
     

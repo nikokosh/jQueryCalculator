@@ -219,6 +219,18 @@ describe('AppComponent', () => {
     expect(comp.expression).toBe('2/7=0.2857');
     expect(comp.currentValue).toBe('0.2857');
   });
+
+  it('should round up float numbers to less than 4 decimal places of precision if needed', () => {
+    comp.pressDigit(21);
+    comp.pressOperator(OPERATORS.divide.value);
+    comp.pressDigit(4);
+    
+    comp.pressEquals();
+    expect(comp.expression).toBe('21/4=5.25');
+    expect(comp.currentValue).toBe('5.25');
+  });
+
+
   
   it('should do nothing if calculation was already made but equals is pressed again', () => {
     comp.expression = '2+2';
