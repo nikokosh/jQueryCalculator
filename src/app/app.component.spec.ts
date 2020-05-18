@@ -132,6 +132,17 @@ describe('AppComponent', () => {
     expect(comp.expression).toBe('2+2.5');
   });
 
+  it('should not start an expression with a multiply or divide operator', () => {
+    comp.pressOperator(OPERATORS.divide.value);
+    comp.pressOperator(OPERATORS.multiply.value);
+    expect(comp.expression).toBe('');
+    comp.pressOperator(OPERATORS.add.value);
+    comp.pressDigit(5);
+    comp.pressEquals();
+    expect(comp.currentValue).toBe('5');
+    expect(comp.expression).toBe('+5=5');
+  });
+
   it('should handle multiple operators serie: replace preceding operator (/*, +*, -*, ** ==> *)', () => {
     comp.pressDigit(2);
     comp.pressOperator(OPERATORS.add.value);
@@ -230,8 +241,6 @@ describe('AppComponent', () => {
     expect(comp.currentValue).toBe('5.25');
   });
 
-
-  
   it('should do nothing if calculation was already made but equals is pressed again', () => {
     comp.expression = '2+2';
     comp.currentValue = '2';

@@ -70,9 +70,13 @@ export class AppComponent {
 
     this.expression = this.isEqualsPressed() ?
       this.currentValue + o : // Pressing an operator immediately following = should start a new calculation that operates on the result of the previous evaluation.
-      this.isLastSymbolAnOperator() ?
-        handleOperatorsSerie(this.expression, o) :
-        this.expression + o
+      this.expression.length === 0 ?
+        (o === OPERATORS.add.value || o === OPERATORS.subtract.value) ?
+          this.expression + o :
+          this.expression :
+        this.isLastSymbolAnOperator() ?
+          handleOperatorsSerie(this.expression, o) :
+          this.expression + o
   }
 
   pressEquals() {
