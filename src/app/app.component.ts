@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { DIGIT_LIMIT, OPERATORS } from './constants';
+import { DIGIT_LIMIT, OPERATORS, APP_REGEX } from './constants';
+import { CalcService } from './calc.service';
 
 interface AppState {
   currentValue: string
@@ -15,25 +16,21 @@ export class AppComponent {
 
   currentValue: string = '0'
   expression: string = ''
-  re = {
-    lastNumInExpression: /^$|(?=\*|\+|\/|\-|)(\d+(\.\d+)?)(?!\S)/, // this regex matches an empty string or a number (float or integer) preceeded by a math operator at the end of a string 
-    operatorsSerie: /(\+|-|\*|\/){2,}$/, // match two or more operators at the end of the string
-    multiplyAndDivide: /(((?<=\+|\*|\/|\n|^)-)?\d+(\.\d+)?)(\/|\*)(-?\d+(\.\d+)?)/,
-    addAndSubtract: /(((?<=\+|\*|\/|^|\n)-)?\d+(\.\d+)?)(\+|\-)(-?\d+(\.\d+)?)/
-  }
+
+  constructor(private calcService: CalcService) {}
 
   pressDigit(digit: number) {
-    if (this.isLastSymbolAnOperator() || this.isLessThanLimit()) {
+    if (this.isPreviousSymbolAnOperator() || this.isLessThanLimit()) {
 
-      if (this.isLastSymbolAnOperator()) this.currentValue = ''
+      if (this.isPreviousSymbolAnOperator()) this.currentValue = ''
 
       const updateState = (currentValue: string, expression: string): AppState => ({ currentValue, expression })
 
       const handleInteger = (num: string, expr: string): AppState => ({
         currentValue: `${parseInt(num)}`, // remove excess zeros at the beginning of the string with parseInt
-        expression: this.isLastSymbolAnOperator() ?
+        expression: this.isPreviousSymbolAnOperator() ?
           expr + parseInt(num) :
-          expr.replace(this.re.lastNumInExpression, `${parseInt(num)}`) 
+          expr.replace(APP_REGEX.lastNumInExpression, `${parseInt(num)}`) 
       })
 
       const updatedValues: AppState = this.isEqualsPressed() ?
@@ -61,8 +58,8 @@ export class AppComponent {
         return (expression[expression.length-1] === OPERATORS.subtract.value) ?
           expression : // 1. replace subtract operator followed by another subtract operator (-- ==> -) 
           expression += operator // 2. let subtract operator follow another operator (*- ==> *-)
-      } else if (this.re.operatorsSerie.test(expression)) {
-        return expression.replace(this.re.operatorsSerie, operator) // 3. replace triple operator by the last operator (/-+ ==> +)
+      } else if (APP_REGEX.operatorsSerie.test(expression)) {
+        return expression.replace(APP_REGEX.operatorsSerie, operator) // 3. replace triple operator by the last operator (/-+ ==> +)
       } else if (operator !== OPERATORS.subtract.value) {
         return expression.substring(0, expression.length-1) + operator // 4. replace preceding operator (/*, +*, -*, ** ==> *)
       }
@@ -73,15 +70,15 @@ export class AppComponent {
       this.expression.length === 0 ?
         (o === OPERATORS.add.value || o === OPERATORS.subtract.value) ?
           this.expression + o :
-          this.expression :
-        this.isLastSymbolAnOperator() ?
+          this.expression : // can't use * or / to start an operation
+        this.isPreviousSymbolAnOperator() ?
           handleOperatorsSerie(this.expression, o) :
           this.expression + o
   }
 
   pressEquals() {
     if (!this.isEqualsPressed()) {
-      const result = this.calcResult(this.expression)
+      const result = this.calcService.calc(this.expression)
       this.currentValue = result
       this.expression = this.expression + '=' + result
     }
@@ -96,7 +93,7 @@ export class AppComponent {
     return /=/.test(expression)
   }
 
-  private isLastSymbolAnOperator(expr: string = this.expression): boolean {
+  private isPreviousSymbolAnOperator(expr: string = this.expression): boolean {
     return Object.values(OPERATORS).some(o => o.value === expr[expr.length-1])
   }
 
@@ -106,42 +103,5 @@ export class AppComponent {
 
   private isLessThanLimit(value: string = this.currentValue, limit: number = DIGIT_LIMIT): boolean {
     return value.length < limit
-  }
-
-  private calcResult(expression: string): string {
-    const mathItUp = {
-      [OPERATORS.add.value]: (x, y) => x + y,
-      [OPERATORS.subtract.value]: (x, y) => x - y,
-      [OPERATORS.multiply.value]: (x, y) => x * y,
-      [OPERATORS.divide.value]: (x, y) => {
-        const countDecimalPlaces = (floatNum: number) => `${floatNum}`.split('.')[1].length
-        const result = x / y
-        return Number.isInteger(result) ?
-          result :
-          countDecimalPlaces(result) > 4 ?
-            result.toFixed(4) :
-            result
-      },
-    }
-    
-    const calc = (str: string, reg: RegExp): string => {
-      let res = str
-      while(reg.test(res)) {
-        res = res.replace(reg, (match, firstOperand, p2, p3, operator, secondOperand) => {
-          return mathItUp[operator](Number(firstOperand), Number(secondOperand)) // Number() handles positive/negative integers and float numbers
-        })
-      }
-      return res
-    }
-
-    /* 
-     1. find the first occurency of *, /, *- and /- and digits around them 
-     3. replace this occurency with the result of the calculation
-     4. find the first occurency of +, -, +- and digits around them
-     5. replace this occurency with the result of the calculation
-     6. repeat searching from the start till only one last number is left
-     */
-    let result = calc(expression, this.re.multiplyAndDivide)
-    return calc(result, this.re.addAndSubtract)
   }
 }

@@ -1,14 +1,23 @@
 import { TestBed, async, ComponentFixture } from '@angular/core/testing';
-import { MockComponent } from 'ng-mocks';
+import { MockComponent, MockService, MockHelper } from 'ng-mocks';
 import { AppComponent } from './app.component';
 import { ButtonsComponent } from './buttons/buttons.component';
 import { DisplayComponent } from './display/display.component';
-import { DIGIT_LIMIT, OPERATORS } from './constants';
+import { DIGIT_LIMIT, OPERATORS, APP_REGEX } from './constants';
+import { CalcService } from './calc.service';
 
+let calcServiceStub: Partial<CalcService>;
 
 describe('AppComponent', () => {
   let comp: AppComponent;
   let fixture: ComponentFixture<AppComponent>;
+  
+  // stub UserService for test purposes
+  calcServiceStub = {
+    calc(expression: string): string {
+      return '1'
+    }
+  };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -17,6 +26,7 @@ describe('AppComponent', () => {
         MockComponent(ButtonsComponent),
         MockComponent(DisplayComponent)
       ],
+      providers: [{ provide: CalcService, useValue: calcServiceStub }]
     }).compileComponents();
   }));
 
@@ -88,11 +98,8 @@ describe('AppComponent', () => {
     comp.expression = currValue;
     comp.pressOperator(OPERATORS.multiply.value);
     comp.pressDigit(2);
-    comp.pressEquals();
-
-    let expectedResult = createMaxLengthValue(2);
-    expect(comp.currentValue).toBe(expectedResult);
-    expect(comp.expression).toBe(`${currValue}*2=${expectedResult}`);
+    
+    expect(comp.expression).toBe(`${currValue}*2`);
   });
 
   it('should reset currentValue when a digit follows an operator', () => {
@@ -137,10 +144,10 @@ describe('AppComponent', () => {
     comp.pressOperator(OPERATORS.multiply.value);
     expect(comp.expression).toBe('');
     comp.pressOperator(OPERATORS.add.value);
-    comp.pressDigit(5);
+    comp.pressDigit(1);
     comp.pressEquals();
-    expect(comp.currentValue).toBe('5');
-    expect(comp.expression).toBe('+5=5');
+    expect(comp.currentValue).toBe('1');
+    expect(comp.expression).toBe('+1=1');
   });
 
   it('should handle multiple operators serie: replace preceding operator (/*, +*, -*, ** ==> *)', () => {
@@ -179,75 +186,33 @@ describe('AppComponent', () => {
   });
   
   it('should show answer when equals is pressed', () => {
-    comp.pressDigit(4);
-    comp.pressOperator(OPERATORS.divide.value);
-    comp.pressOperator(OPERATORS.subtract.value);
-    comp.pressDigit(2); // -2
-    comp.pressOperator(OPERATORS.add.value);
-    comp.pressDigit(6); 
-    comp.pressOperator(OPERATORS.multiply.value);
-    comp.pressDigit(0);
-    comp.pressDecimal();
-    comp.pressDigit(5);
-    
+    comp.expression = '4/-2+6*0.5';
     comp.pressEquals();
     expect(comp.expression).toBe('4/-2+6*0.5=1');
     expect(comp.currentValue).toBe('1');
-
-    comp.expression = '-10.4*-2+-70/-35-42*0.5*2*4';
-    comp.currentValue = '4';
-    comp.pressEquals();
-    expect(comp.expression).toBe('-10.4*-2+-70/-35-42*0.5*2*4=-145.2');
-    expect(comp.currentValue).toBe('-145.2');
-
-    comp.expression = '10.4*-2+70/35-42*0.5*2*4';
-    comp.currentValue = '4';
-    comp.pressEquals();
-    expect(comp.expression).toBe('10.4*-2+70/35-42*0.5*2*4=-186.8');
-    expect(comp.currentValue).toBe('-186.8');
   });
 
   it('should start a new calculation that operates on the result of the previous evaluation if an operator was pressed immediately after =', () => {
-    comp.expression = '2+2';
-    comp.currentValue = '2';
+    comp.expression = '1+0';
+    comp.currentValue = '1';
     comp.pressEquals();
     comp.pressOperator(OPERATORS.multiply.value);
-    comp.pressDigit(3);
-    expect(comp.expression).toBe('4*3');
-    expect(comp.currentValue).toBe('3');
+    comp.pressDigit(1);
+    expect(comp.expression).toBe('1*1');
+    expect(comp.currentValue).toBe('1');
 
     comp.pressEquals();
-    expect(comp.expression).toBe('4*3=12');
-    expect(comp.currentValue).toBe('12');
-  });
-
-  it('should round up float numbers to 4 decimal places of precision', () => {
-    comp.pressDigit(2);
-    comp.pressOperator(OPERATORS.divide.value);
-    comp.pressDigit(7);
-    
-    comp.pressEquals();
-    expect(comp.expression).toBe('2/7=0.2857');
-    expect(comp.currentValue).toBe('0.2857');
-  });
-
-  it('should round up float numbers to less than 4 decimal places of precision if needed', () => {
-    comp.pressDigit(21);
-    comp.pressOperator(OPERATORS.divide.value);
-    comp.pressDigit(4);
-    
-    comp.pressEquals();
-    expect(comp.expression).toBe('21/4=5.25');
-    expect(comp.currentValue).toBe('5.25');
+    expect(comp.expression).toBe('1*1=1');
+    expect(comp.currentValue).toBe('1');
   });
 
   it('should do nothing if calculation was already made but equals is pressed again', () => {
-    comp.expression = '2+2';
-    comp.currentValue = '2';
+    comp.expression = '1+0';
+    comp.currentValue = '0';
     comp.pressEquals();
     comp.pressEquals();
-    expect(comp.expression).toBe('2+2=4');
-    expect(comp.currentValue).toBe('4');
+    expect(comp.expression).toBe('1+0=1');
+    expect(comp.currentValue).toBe('1');
   });
 
   it('should restore default values when clear button is pressed', () => {
