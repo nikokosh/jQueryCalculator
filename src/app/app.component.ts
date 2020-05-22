@@ -24,21 +24,7 @@ export class AppComponent {
 
       if (this.isPreviousSymbolAnOperator()) this.currentValue = ''
 
-      const updateState = (currentValue: string, expression: string): AppState => ({ currentValue, expression })
-
-      const handleInteger = (num: string, expr: string): AppState => ({
-        currentValue: `${parseInt(num)}`, // remove excess zeros at the beginning of the string with parseInt
-        expression: this.isPreviousSymbolAnOperator() ?
-          expr + parseInt(num) :
-          expr.replace(APP_REGEX.lastNumInExpression, `${parseInt(num)}`) 
-      })
-
-      const updatedValues: AppState = this.isEqualsPressed() ?
-        updateState(`${digit}`, `${digit}`) : // start new calculation
-        this.isFloat(this.currentValue + digit) ?
-          updateState(this.currentValue + digit, this.expression + digit) :
-          handleInteger(this.currentValue + digit, this.expression)
-
+      const updatedValues = this.updateValuesWithNewDigit(digit, this.currentValue)
       this.currentValue = updatedValues.currentValue
       this.expression = updatedValues.expression
     }
@@ -53,18 +39,6 @@ export class AppComponent {
   }
 
   pressOperator(o: string) {
-    const handleOperatorsSerie = (expression: string, operator: string): string => {
-      if (operator === OPERATORS.subtract.value) {
-        return (expression[expression.length-1] === OPERATORS.subtract.value) ?
-          expression : // 1. replace subtract operator followed by another subtract operator (-- ==> -) 
-          expression += operator // 2. let subtract operator follow another operator (*- ==> *-)
-      } else if (APP_REGEX.operatorsSerie.test(expression)) {
-        return expression.replace(APP_REGEX.operatorsSerie, operator) // 3. replace triple operator by the last operator (/-+ ==> +)
-      } else if (operator !== OPERATORS.subtract.value) {
-        return expression.substring(0, expression.length-1) + operator // 4. replace preceding operator (/*, +*, -*, ** ==> *)
-      }
-    }
-
     this.expression = this.isEqualsPressed() ?
       this.currentValue + o : // Pressing an operator immediately following = should start a new calculation that operates on the result of the previous evaluation.
       this.expression.length === 0 ?
@@ -72,7 +46,7 @@ export class AppComponent {
           this.expression + o :
           this.expression : // can't use * or / to start an operation
         this.isPreviousSymbolAnOperator() ?
-          handleOperatorsSerie(this.expression, o) :
+          this.handleOperatorsSerie(this.expression, o) :
           this.expression + o
   }
 
@@ -103,5 +77,51 @@ export class AppComponent {
 
   private isLessThanLimit(value: string = this.currentValue, limit: number = DIGIT_LIMIT): boolean {
     return value.length < limit
+  }
+
+  // TODO: refactor
+  // TODO: extract to a service? 
+  private updateValuesWithNewDigit(digit: number, currValue: string): AppState {
+
+    const updateState = (currentValue: string, expression: string): AppState => ({ currentValue, expression })
+
+    const handleInteger = (num: string, expr: string): AppState => ({
+      currentValue: `${parseInt(num)}`, // remove excess zeros at the beginning of the string with parseInt: 01 ==> 1
+      expression: this.isPreviousSymbolAnOperator() ?
+        expr + num :
+        expr.replace(APP_REGEX.lastNumInExpression, `${parseInt(num)}`) 
+    })
+
+    return this.isEqualsPressed() ?
+      updateState(`${digit}`, `${digit}`) : // start new calculation
+      this.isFloat(currValue + digit) ?
+        updateState(currValue + digit, this.expression + digit) :
+        handleInteger(currValue + digit, this.expression)
+  }
+
+  // TODO: refactor
+  // TODO: extract to a service? 
+  private handleOperatorsSerie(expression: string, operator: string): string {
+
+    const isSubtract = (o: string): boolean => o === OPERATORS.subtract.value
+    const isSerie = (str: string): boolean => APP_REGEX.operatorsSerie.test(str)
+
+    if (isSubtract(operator)) {
+      return isSubtract(expression[expression.length-1]) ?
+        // 1. don't add second subtract operator (-- ==> -) 
+        expression : 
+        // 2. let subtract operator follow another operator (*- ==> *-)
+        expression += operator 
+    }
+
+    if (isSerie(expression)) {
+      // 3. replace triple operator by the last operator (/-+ ==> +)
+      return expression.replace(APP_REGEX.operatorsSerie, operator) 
+    } 
+    
+    if (!isSubtract(operator)) {
+      // 4. replace preceding operator (/*, +*, -*, ** ==> *)
+      return expression.substring(0, expression.length-1) + operator 
+    }
   }
 }
