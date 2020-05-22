@@ -21,19 +21,57 @@ export class CalcService {
     return this.parseMathExpression(result, APP_REGEX.addAndSubtract)
   }
 
+  /* 
+  Regex matches preceeding operator(s) 
+  then a number (integer or float) 
+  then an operator (between two numbers) 
+  then another number (integer or float)
+  */
   private parseMathExpression(str: string, reg: RegExp): string {
-    let res = str
-    while(reg.test(res)) {
-      res = res.replace(reg, (match, preceedingOperators, firstOperand, p3, operator, secondOperand, p6, offset, string) => {
+
+    /* 
+    For example, the expression is 3+-3*-2
+    First match is +-3*2
+    Preceeding operators: +-
+    First operand: 3
+    Operator: *
+    Second operand: -2 
+    Replace function returns +6, 
+    */
+    const findAndExecuteOperation = (expr: string, regexp: RegExp) => {
+      return expr.replace(regexp, (match, preceedingOperators, firstOperand, p3, operator, secondOperand, p6, offset, string) => {
         const { firstOperator, secondOperator } = this.parsePreceedingOperators(preceedingOperators, match, string)
         return firstOperator + this.mathItUp()[operator](
           Number(`${secondOperator}${firstOperand}`), // Number() handles positive/negative integers and float numbers
           Number(secondOperand)) 
       })
     }
+
+    let res = str
+    while(reg.test(res)) {
+      res = findAndExecuteOperation(res, reg)
+    }
     return res
   }
 
+  /*
+  Four different cases:
+  - operators serie: 1+-3*2
+    first operator will be +
+    second will be -
+
+  - only one operator after a digit: 1-3*2 
+    first operator: 0
+    second: none
+
+  - only one operator at the beginning of the string: -3*2
+    first operator: none
+    second: -
+
+  - no operators at all: 3*2
+    first operator: none
+    second: none
+  */
   private parsePreceedingOperators(operators: string, mathExpr: string, string: string) {
 
     const isOperatorsSerie = (str: string = ''): boolean => str.length > 1
@@ -58,6 +96,9 @@ export class CalcService {
 
       [OPERATORS.multiply.value]: (x, y) => x * y,
 
+      /* let an integer be as it is or round a float number to maximum four decimal places of precision: 
+      2.25 ==> 2.25
+      3.33333333 ==> 3.3333 */
       [OPERATORS.divide.value]: (x, y) => {
 
         const countDecimalPlaces = (floatNum: number) => `${floatNum}`.split('.')[1].length

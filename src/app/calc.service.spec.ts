@@ -25,6 +25,9 @@ describe('CalcService', () => {
 
     res = service.calc('10.4*-2+70/35-42*0.5*2*4');
     expect(res).toBe('-186.8');
+
+    res = service.calc('3+-3*2');
+    expect(res).toBe('-3');
   });
 
   it('should round up float numbers to 4 decimal places of precision', () => {
